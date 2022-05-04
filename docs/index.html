@@ -611,7 +611,7 @@ async function ggs(g)
 			<td onclick="window.location=${g[0]}">$${((Number(gd[3])/Number(gd[2]))*Number(gd[1])/1e18).toLocaleString(undefined,{minimumFractionDigits: 4, maximumFractionDigits: 4})}</td>
 			<td onclick="window.location=${g[0]}">${giu(g[2])}</td>
 			<td onclick="window.location=${g[0]}">${(oi[2]/1e18).toLocaleString(undefined,{minimumFractionDigits: 2, maximumFractionDigits: 2})}%</td>
-			<td onclick="window.location=${g[0]}">${(apy*100).toLocaleString(undefined,{minimumFractionDigits: 2, maximumFractionDigits: 2})}%</td>
+			<td onclick="window.location=${g[0]}">${(apy*100).toLocaleString(undefined,{minimumFractionDigits: 0, maximumFractionDigits: 0})}%</td>
 			<td onclick="window.location=${g[0]}">${giu(g[3])}</td>
 			<td onclick="window.location=${g[0]}">$${(Number(gd[1])/1e18).toLocaleString(undefined,{minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
 			<td onclick="window.location=${g[0]}">${fornumstd(Number(gd[3]),18)}🌾</td>
