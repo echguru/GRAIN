@@ -299,7 +299,8 @@ table thead tr td,table tbody tr td{min-width:max-content;min-width: -moz-max-co
 		</div>
 	-->
 
-<h2 id="all">Available Granaries (5/6)</h2>
+<h2>Available Granaries (<span id="totgra">3</span>)</h2>
+
 Invest any asset to get the most out of it with our tailor-made strategies.
 <br><br>
 <i class="toggs" style="border:1px dashed gold;border-radius:8px"> <input type="checkbox" checked onchange="togcar()"> Hide inactive? </i>
@@ -452,23 +453,22 @@ Overview of your investments and other performance statistics for all the Granar
 <script>
 CHAINID = 3000
 RPC_URL = "https://rpc.ech.network"
-window.addEventListener(
-	'load',
-	async function()
-	{
-		if(window.ethereum&&Number(window.ethereum.chainId)==CHAINID)
-		{web3 = new Web3(web3.currentProvider);if(!(window.ethereum.selectedAddress==null)){cw()}}
-		else
+window.addEventListener('load',async function()
+{
+	if(window.ethereum&&isFinite(window.ethereum.selectedAddress))
 		{
-			console.log("didnt find user addr, printing just the apr & tvl")
-			web3 = new Web3(RPC_URL);
-			$("mainstage").innerHTML="";
-			for(i=0;i< grains.length;i++){ggs(grains[i])};
-		}
-		pantvl()
-	},
-	false
-);
+		web3 = new Web3(web3.currentProvider);
+		if(await ethereum._metamask.isUnlocked() == false){for(i=0;i< grains.length;i++){ggs(grains[i])}}
+	}
+	else
+	{
+		console.log("didnt find user addr, printing just the apr & tvl")
+		web3 = new Web3(RPC_URL);
+		$("mainstage").innerHTML="";
+		for(i=0;i< grains.length;i++){ggs(grains[i])};
+	}
+	pantvl()
+},false);
 
 function pantvl()
 {
@@ -527,18 +527,21 @@ function toginacg()
 }
 
 grains=[
-	["7100",	"0xb1bCe76A5e2380d192E81AbbfFF71242f73eC09f",	["ecs.png"],			["ecs.png"],	["ecswap.png"],		true],
-	["7101",	"0xdab2F3901ACfEdb96971a12D6aC1C6BB5673889e",	["echelon.png"],		["ecs.png"],	["ecswap.png"],		true],
-	["7102",	"0xfcB3Ac1C3Bc5Cab873bb66E26a7076d514f2595b",	["ecs.png","echelon.png"],["ecs.png"],	["ecswap.png"],		true],
+	["7100",	"0xb1bCe76A5e2380d192E81AbbfFF71242f73eC09f",	["ecs.png"],			["ecs.png"],	["ecs.png"],		true],
+	["7101",	"0xdab2F3901ACfEdb96971a12D6aC1C6BB5673889e",	["echelon.png"],		["ecs.png"],	["ecs.png"],		true],
+	["7102",	"0xfcB3Ac1C3Bc5Cab873bb66E26a7076d514f2595b",	["ecs.png","echelon.png"],["ecs.png"],	["ecs.png"],		true],
 ]
+	$("totgra").innerHTML = grains.length
 pfv=0
 async function ggs(g)
 {
 	G = new web3.eth.Contract(grabi,g[1]);
 	//let info = G.methods.info().call()
-	url="https://rpc.mtv.ac";
+	url=RPC_URL;
 	data={"jsonrpc":"2.0","id":9,"method":"eth_call","params":[{"data":"0x370158ea","to":g[1]},"latest"]}
 	let info = fetch(url, { method: 'POST', body: JSON.stringify(data), headers: { 'Content-Type': 'application/json'} }).then(r=>r.json()).then(r=>r.result);
+
+	//let info = G.methods.info().call()
 	let gtvl = G.methods.tvl().call()
 	let tsup = G.methods.totalSupply().call()
 	let gugb = 0;
@@ -547,7 +550,7 @@ async function ggs(g)
 	{
 		gugb = await G.methods.balanceOf(window.ethereum.selectedAddress).call();
 		$("btn-connect").style.display="none";
-		addCSS("td:nth-child(2){display:block}");
+		addCSS("td:nth-child(2){display:revert}");
 		sit = 1
 	}
 	else {
@@ -560,6 +563,8 @@ async function ggs(g)
 	.then(gd=>{
 		//console.log(gd)
 		gtr = document.createElement("tr");
+		//gtr.setAttribute("onclick","window.location="+g[0])
+		if(!g[5]){gtr.setAttribute("class","inacg")}
 		if(gd[1]==0){gd[1]=1}
 		if(gd[2]==0){gd[2]=1}
 		oi=[];
@@ -576,11 +581,12 @@ async function ggs(g)
 			<td><a href="${g[0]}.html" target="_blank">🌾#${g[0]}</a></td>
 			<td onclick="window.location=${g[0]}">$${((Number(gd[3])/Number(gd[2]))*Number(gd[1])/1e18).toLocaleString(undefined,{minimumFractionDigits: 4, maximumFractionDigits: 4})}</td>
 			<td onclick="window.location=${g[0]}">${giu(g[2])}</td>
-			<td onclick="window.location=${g[0]}">${(oi[2]/1e18).toFixed(1)}%</td>
+			<td onclick="window.location=${g[0]}">${(oi[2]/1e18).toLocaleString(undefined,{minimumFractionDigits: 2, maximumFractionDigits: 2})}%</td>
 			<td onclick="window.location=${g[0]}">${giu(g[3])}</td>
-			<td onclick="window.location=${g[0]}">$${(Number(gd[1])/1e18).toLocaleString(undefined,{minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+			<td onclick="window.location=${g[0]}">$${(Number(gd[1])/1e18).toLocaleString(undefined,{minimumFractionDigits: 0, maximumFractionDigits: 0})}</td>
 			<td onclick="window.location=${g[0]}">${fornumstd(Number(gd[3]),18)}🌾</td>
 			<td onclick="window.location=${g[0]}">${giu(g[4])}</td>
+			<td onclick="window.location=${g[0]}">${g[5]?"Active":"Inactive"}</td>
 		`;
 		pfv += ((Number(gd[3])/Number(gd[2]))*Number(gd[1]));
 		$("pf").innerHTML = fornumstd(pfv,18);
@@ -640,13 +646,13 @@ const addCSS = s => document.head.appendChild(document.createElement("style")).i
 async function cw()
 {
 	if(!(window.ethereum)){console.log("Metamask not detected!");return(0)}
-	if(!(Number(window.ethereum.chainId)==CHAINID)){console.log("Wrong network detected!");return(0)}
+	if(!(Number(window.ethereum.chainId)==250)){console.log("Wrong network detected!");return(0)}
 	await window.ethereum.enable();
 	$("btn-connect").innerHTML= (window.ethereum.selectedAddress).substr(0,10) +"..."+(window.ethereum.selectedAddress).substr(34);
 	$("btn-connect").style.display="none";
 	var sheet = document.createElement('style');
 	$("btn-connect").style.display="none";
-	addCSS("td:nth-child(2){display:block}");
+	addCSS("td:nth-child(2){display:revert}");
 	console.log("found user:",(window.ethereum.selectedAddress), "printing portfolio")
 	$("mainstage").innerHTML = ""
 	for(i=0;i< grains.length;i++){ggs(grains[i])}
