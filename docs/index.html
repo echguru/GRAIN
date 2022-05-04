@@ -646,7 +646,7 @@ const addCSS = s => document.head.appendChild(document.createElement("style")).i
 async function cw()
 {
 	if(!(window.ethereum)){console.log("Metamask not detected!");return(0)}
-	if(!(Number(window.ethereum.chainId)==250)){console.log("Wrong network detected!");return(0)}
+	if(!(Number(window.ethereum.chainId)==CHAINID)){console.log("Wrong network detected!");return(0)}
 	await window.ethereum.enable();
 	$("btn-connect").innerHTML= (window.ethereum.selectedAddress).substr(0,10) +"..."+(window.ethereum.selectedAddress).substr(34);
 	$("btn-connect").style.display="none";
