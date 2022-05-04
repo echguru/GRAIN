@@ -207,8 +207,8 @@ thead tr td{font-size: 1.25em;text-align: center;text-decoration:underline dotte
 details{font-size: 0.7em}
 td img{height:32px;width: 32px}
 td:first-child, thead tr td{font-family:inherit !important}
-td:nth-child(7){display:none}
-td:nth-child(3),td:nth-child(5),td:nth-child(8),td:nth-child(9){text-align: center;font-family: inherit}
+td:nth-child(8){display:none}
+td:nth-child(3),td:nth-child(6),td:nth-child(9),td:nth-child(10){text-align: center;font-family: inherit}
 .topchains img{width:32px;padding:0 4px}
 .topchains:not(.selchain) img{-webkit-filter: grayscale(100%);filter: grayscale(100%);}
 .topchains:hover img{-webkit-filter:none;filter:none;}
@@ -320,11 +320,12 @@ Overview of your investments and other performance statistics for all the Granar
 				<td onclick="sortit(1)">My Position</td>
 				<td onclick="sortit(2)">Underlying</td>
 				<td onclick="sortit(3)">Realized APR</td>
-				<td onclick="sortit(4)">Instrument</td>
-				<td onclick="sortit(5)">Value Locked</td>
-				<td onclick="sortit(6)">Balance</td>
-				<td onclick="sortit(7)">Uses</td>
-				<td onclick="sortit(8)">Status</td>
+				<td onclick="sortit(4)">Expected APY</td>
+				<td onclick="sortit(5)">Instrument</td>
+				<td onclick="sortit(6)">Value Locked</td>
+				<td onclick="sortit(7)">Balance</td>
+				<td onclick="sortit(8)">Uses</td>
+				<td onclick="sortit(9)">Status</td>
 			</tr>
 		</thead>
 		<tbody id="mainstage"></tbody>
@@ -487,6 +488,32 @@ function fornum(n,d)
 	else if(_n>0){n_=(_n/1e0).toFixed(5)+""}
 	return(n_);
 }
+function fornumprec(n,d,p)
+{
+	_n=(Number(n)/10**Number(d));
+	n_=_n;
+	if(_n>1e18){n_=(_n/1e18).toFixed(p)+"Qt"}
+	else if(_n>1e15){n_=(_n/1e15).toFixed(p)+"Qd"}
+	else if(_n>1e12){n_=(_n/1e12).toFixed(p)+"Tn"}
+	else if(_n>1e9){n_=(_n/1e9).toFixed(p)+"Bn"}
+	else if(_n>1e6){n_=(_n/1e6).toFixed(p)+"Mn"}
+	else if(_n>1e3){n_=(_n/1e3).toFixed(p)+"Th"}
+	else if(_n>0){n_=(_n/1e0).toFixed(p)+""}
+	return(n_);
+}
+function fornumfxd(n,d)
+{
+	_n=(Number(n)/10**Number(d));
+	n_=_n;
+	if(_n>1e18){n_=(_n/1e18).toFixed()+"Qt"}
+	else if(_n>1e15){n_=(_n/1e15).toFixed()+"Qd"}
+	else if(_n>1e12){n_=(_n/1e12).toFixed()+"Tn"}
+	else if(_n>1e9){n_=(_n/1e9).toFixed()+"Bn"}
+	else if(_n>1e6){n_=(_n/1e6).toFixed()+"Mn"}
+	else if(_n>1e3){n_=(_n/1e3).toFixed()+"Th"}
+	else if(_n>0){n_=(_n/1e0).toFixed(2)+""}
+	return(n_);
+}
 function $(_) {return document.getElementById(_);}
 function cw(){}
 function switchchain(v)
@@ -555,10 +582,11 @@ async function ggs(g)
 	else {
 		gugb = 0;
 		addCSS("td:nth-child(2){display:none}");
-		sit=5
+		sit=6
 	}
 	//let gd = await
-	Promise.all([info,gtvl,tsup,gugb])
+	let ap = G.methods.apyr().call()
+	Promise.all([info,gtvl,tsup,gugb,ap])
 	.then(gd=>{
 		//console.log(gd)
 		gtr = document.createElement("tr");
@@ -576,17 +604,21 @@ async function ggs(g)
 		//	,"\ngd123: ",gd[1],gd[2],gd[3]
 		//)
 		//console.log(g[0],gd)
+		aperiod = (365*86400)/(gd[4][1]-gd[4][2])
+		apy = ((1+(oi[2]/1e20)/aperiod)**aperiod) - 1
 		gtr.innerHTML = `
 			<td><a href="${g[0]}.html" target="_blank">🌾#${g[0]}</a></td>
 			<td onclick="window.location=${g[0]}">$${((Number(gd[3])/Number(gd[2]))*Number(gd[1])/1e18).toLocaleString(undefined,{minimumFractionDigits: 4, maximumFractionDigits: 4})}</td>
 			<td onclick="window.location=${g[0]}">${giu(g[2])}</td>
 			<td onclick="window.location=${g[0]}">${(oi[2]/1e18).toLocaleString(undefined,{minimumFractionDigits: 2, maximumFractionDigits: 2})}%</td>
+			<td onclick="window.location=${g[0]}">${(apy*100).toLocaleString(undefined,{minimumFractionDigits: 2, maximumFractionDigits: 2})}%</td>
 			<td onclick="window.location=${g[0]}">${giu(g[3])}</td>
 			<td onclick="window.location=${g[0]}">$${(Number(gd[1])/1e18).toLocaleString(undefined,{minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
 			<td onclick="window.location=${g[0]}">${fornumstd(Number(gd[3]),18)}🌾</td>
 			<td onclick="window.location=${g[0]}">${giu(g[4])}</td>
 			<td onclick="window.location=${g[0]}">${g[5]?"Active":"Inactive"}</td>
 		`;
+		//console.log("aprs",oi[2]/1e20,apy)
 		pfv += ((Number(gd[3])/Number(gd[2]))*Number(gd[1]));
 		$("pf").innerHTML = fornumstd(pfv,18);
 		$("mainstage").append(gtr);
