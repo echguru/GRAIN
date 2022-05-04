@@ -458,7 +458,7 @@ window.addEventListener('load',async function()
 	if(window.ethereum&&isFinite(window.ethereum.selectedAddress))
 		{
 		web3 = new Web3(web3.currentProvider);
-		if(await ethereum._metamask.isUnlocked() == false){for(i=0;i< grains.length;i++){ggs(grains[i])}}
+		for(i=0;i< grains.length;i++){ggs(grains[i])}
 	}
 	else
 	{
