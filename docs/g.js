@@ -1,5 +1,5 @@
 EXPLORE = "https://scout.ech.network/address/";
-tsca = "0x832497895f05100E53f42DFA8fC758B4866B183a";
+tsca = "0x5C652A94c672f8F6D021417bB5eE75c322ecf1Fc";
 function $(_) {return document.getElementById(_);}
 let provider= {};
 let signer= {};

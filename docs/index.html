@@ -453,6 +453,7 @@ Invest any asset to get the most out of it with our tailor-made strategies.
 <script>
 CHAINID = 3000
 RPC_URL = "https://rpc.ech.network"
+TVLGURU = "0x5C652A94c672f8F6D021417bB5eE75c322ecf1Fc"
 window.addEventListener('load',async function()
 {
 	if(window.ethereum&&isFinite(window.ethereum.selectedAddress))
@@ -472,7 +473,7 @@ window.addEventListener('load',async function()
 
 function pantvl()
 {
-	pt=new web3.eth.Contract([{"constant": true,"inputs": [],"name": "tvl","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"payable": false,"stateMutability": "view","type": "function"}],"0x5C652A94c672f8F6D021417bB5eE75c322ecf1Fc")
+	pt=new web3.eth.Contract([{"constant": true,"inputs": [],"name": "tvl","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"payable": false,"stateMutability": "view","type": "function"}],TVLGURU)
 	pt.methods.tvl().call((e,r)=>{$("pantvl").innerHTML = "$"+(Number(r)/1e18).toLocaleString()});
 }
 function fornum(n,d)
