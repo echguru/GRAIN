@@ -563,9 +563,9 @@ async function gubs()
 		var p = theCon.balanceOf(window.ethereum.selectedAddress)
 		var q = theLPT.balanceOf(window.ethereum.selectedAddress)
 		var info = theCon.info()
-		await Promise.all([p,q,info,ts,vl]).then(s=>{
+		await Promise.all([p,q,info]).then(s=>{
 		//DECIMALDEPENDENT : 1e18 => 1e6 , 1e18 => 1e12
-			$("wd-usd").innerHTML=((Number(s[0])/Number(s[3]*Number(s[4])))/(10**DECIMAL)).toFixed(DECIMAL);
+			$("wd-usd").innerHTML=((Number(s[0])/TS*VL)))/(10**DECIMAL)).toFixed(DECIMAL);
 			$("wd-ab").innerHTML=(s[0]/(10**DECIMAL)).toFixed(DECIMAL);
 			$("dep-ab").innerHTML=(s[1]/(10**DECIMAL)).toFixed(DECIMAL);
 			$("redemp").innerHTML=(s[0] * s[2][1] / (10**(2*DECIMAL))).toFixed(DECIMAL);
@@ -573,7 +573,7 @@ async function gubs()
 	}
 	catch(e){console.log(e);/*$("cw_m").innerHTML=e*/}
 }
-
+TS=0;VL=0;
 async function DrefreshFarm()
 {
 	try
@@ -598,8 +598,8 @@ async function DrefreshFarm()
 		let io = (await fetch(url, { method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json' } })).json();
 
 		await Promise.all([ts,vl,io]).then(d=>{
-			d[0]=Number(d[0]._hex)
-			d[1]=Number(d[1]._hex)
+			d[0]=Number(d[0]._hex);TS=d[0]
+			d[1]=Number(d[1]._hex);VL=d[1]
 			console.log(d);
 			$("c_ts").innerHTML = fornum(Number(d[0]),DECIMAL);
 			$("c_mc").innerHTML = "$ "+fornum(Number(d[1]),18);
