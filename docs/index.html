@@ -575,18 +575,34 @@ RPC_URL = "https://rpc.ech.network"
 TVLGURU = "0x5C652A94c672f8F6D021417bB5eE75c322ecf1Fc"
 window.addEventListener('load',async function()
 {
-	if(window.ethereum&&isFinite(window.ethereum.selectedAddress))
-		{
-		web3 = new Web3(web3.currentProvider);
-		for(i=0;i< grains.length;i++){ggs(grains[i])}
-	}
-	else
+	if(typeof window.ethereum == "undefined")
 	{
 		console.log("didnt find user addr, printing just the apr & tvl")
 		web3 = new Web3(RPC_URL);
 		$("mainstage").innerHTML="";
-		for(i=0;i< grains.length;i++){ggs(grains[i])};
 	}
+	else
+	{
+		web3 = new Web3(web3.currentProvider);
+		if(isFinite(Number(window.ethereum.chainId))&&(window.ethereum.chainId!=CHAINID))
+		{
+			window.ethereum.request({
+    		method: "wallet_addEthereumChain",
+    		params: [{
+        		chainId: "0xbb8",
+        		rpcUrls: ["https://rpc.ech.network","https://evm.ech.network"],
+        		chainName: "Echelon",
+        		nativeCurrency: {
+            		name: "ECH",
+            		symbol: "ECH",
+            		decimals: 18
+        		},
+        		blockExplorerUrls: ["https://scout.ech.network","https://explorer.ech.network","https://scan.ech.guru"]
+    			}]
+			});
+		}
+	}
+	for(i=0;i< grains.length;i++){ggs(grains[i])};
 	pantvl()
 },false);
 

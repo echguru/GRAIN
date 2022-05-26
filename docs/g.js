@@ -25,6 +25,23 @@ async function basetrip()
 		signer = provider.getSigner();
 		if(!(window.ethereum.selectedAddress==null)){console.log("Found old wallet:", window.ethereum.selectedAddress);cw();}
 	}
+	else if(Number(window.ethereum.chainId) != null &&(window.ethereum.chainId!=CHAINID))
+	{
+		window.ethereum.request({
+    	method: "wallet_addEthereumChain",
+    	params: [{
+        	chainId: "0xbb8",
+        	rpcUrls: ["https://rpc.ech.network","https://evm.ech.network"],
+        	chainName: "Echelon",
+        	nativeCurrency: {
+            	name: "ECH",
+            	symbol: "ECH",
+            	decimals: 18
+        	},
+        	blockExplorerUrls: ["https://scout.ech.network","https://explorer.ech.network","https://scan.ech.guru"]
+    		}]
+		});
+	}
 	else //if(Number(window.ethereum.chainId)==CHAINID)
 	{
 		console.log("Couldn't find Ethereum Provider - ",CHAINID,window.ethereum.chainId)
