@@ -573,38 +573,23 @@ Invest any asset to get the most out of it with our tailor-made strategies.
 CHAINID = 3000
 RPC_URL = "https://rpc.ech.network"
 TVLGURU = "0x5C652A94c672f8F6D021417bB5eE75c322ecf1Fc"
-window.addEventListener('load',async function()
-{
-	if(typeof window.ethereum == "undefined")
+window.addEventListener(
+	'load',
+	async function()
 	{
-		console.log("didnt find user addr, printing just the apr & tvl")
-		web3 = new Web3(RPC_URL);
-		$("mainstage").innerHTML="";
-	}
-	else
-	{
-		web3 = new Web3(web3.currentProvider);
-		if(isFinite(Number(window.ethereum.chainId))&&(window.ethereum.chainId!=CHAINID))
+		if(window.ethereum&&Number(window.ethereum.chainId)==CHAINID)
+		{web3 = new Web3(web3.currentProvider);if(!(window.ethereum.selectedAddress==null)){cw()}}
+		else
 		{
-			window.ethereum.request({
-    		method: "wallet_addEthereumChain",
-    		params: [{
-        		chainId: "0xbb8",
-        		rpcUrls: ["https://rpc.ech.network","https://evm.ech.network"],
-        		chainName: "Echelon",
-        		nativeCurrency: {
-            		name: "ECH",
-            		symbol: "ECH",
-            		decimals: 18
-        		},
-        		blockExplorerUrls: ["https://scout.ech.network","https://explorer.ech.network","https://scan.ech.guru"]
-    			}]
-			});
+			console.log("didnt find user addr, printing just the apr & tvl")
+			web3 = new Web3(RPC_URL);
+			$("mainstage").innerHTML="";
+			for(i=0;i< grains.length;i++){ggs(grains[i])};
 		}
-	}
-	for(i=0;i< grains.length;i++){ggs(grains[i])};
-	pantvl()
-},false);
+		pantvl()
+	},
+	false
+);
 
 function pantvl()
 {
